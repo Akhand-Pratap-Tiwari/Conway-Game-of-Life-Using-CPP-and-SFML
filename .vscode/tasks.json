@@ -1,0 +1,40 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "cppbuild",
+			"label": "C/C++: cl.exe build active file",
+			"command": "cl.exe",
+			"args": [
+				"/Zi",
+				"/EHsc",
+				"/nologo",
+				// "/Fd${workspaceFolder}\\intermediate\\",
+				"/I\"D:/ProgramsAndApps/SFML-2.6.1/include\"",
+				// "/Fo${workspaceFolder}\\intermediate\\${fileBasenameNoExtension}.obj", 
+				"${file}",
+				"/link",
+				// "/ILK:${workspaceFolder}\\intermediate\\${fileBasenameNoExtension}.ilk",
+				"/MACHINE:X86",
+				// "/OUT:${workspaceFolder}\\output\\${fileBasenameNoExtension}.exe",
+				"/LIBPATH:\"D:/ProgramsAndApps/SFML-2.6.1/lib\"",
+				"sfml-system.lib", 
+				"sfml-window.lib", 
+				"sfml-graphics.lib", 
+				"sfml-network.lib", 
+				"sfml-audio.lib"
+			],
+			"options": {
+				"cwd": "${fileDirname}"
+			},
+			"problemMatcher": [
+				"$msCompile"
+			],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"detail": "compiler: cl.exe"
+		}
+	]
+}
