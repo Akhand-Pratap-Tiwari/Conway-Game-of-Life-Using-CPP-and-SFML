@@ -19,7 +19,13 @@ class Grid {
   Grid() {}
   V2D_CIRCLE_SHAPE gridPoints;
   V2D_CIRCLE_SHAPE tempGridPoints;
-  vector<vector<int>> delta = {
+  int rows;
+  int cols;
+  float circleRadius;
+  float inBetweenSpacing;
+  float posX = 0.0;
+  float posY = 0.0;
+  int delta[8][2] = {
       {1, 0},
       {0, 1},
       {1, 1},
@@ -34,13 +40,6 @@ class Grid {
   int getAliveNbrs(int r, int c);
 
  public:
-  int rows;
-  int cols;
-  float circleRadius;
-  float inBetweenSpacing;
-  float posX = 0.0;
-  float posY = 0.0;
-
   Grid(
       int rows,
       int cols,
@@ -59,9 +58,9 @@ bool getRandBool() {
 
 int main() {
   RenderWindow window(VideoMode(800, 600), "Grid of Points");
-  constexpr int ROWS = 80;
-  constexpr int COLS = 150;
-  Grid gridOfPoints(ROWS, COLS, 1, 5.0, getRandBool);
+  constexpr int ROWS = 150;
+  constexpr int COLS = 200;
+  Grid gridOfPoints(ROWS, COLS, 1, 1.5, getRandBool);
 
   while (window.isOpen()) {
     Event event;
