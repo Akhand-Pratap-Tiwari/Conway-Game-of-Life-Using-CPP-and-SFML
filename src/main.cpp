@@ -1,44 +1,24 @@
 #include <SFML/Graphics.hpp>
-#include <random>
 #include <iostream>
+#include <random>
+
 using namespace std;
 using namespace sf;
 
-void drawGrid(vector<vector<CircleShape>>& gridPoints, RenderWindow& window) {
-  for (const auto& pointRow : gridPoints) {
-    for (const auto& point : pointRow)
-      window.draw(point);
-  }
-}
+namespace globalConfigs {
+random_device randomDevice;
+mt19937 gen(randomDevice());
+bernoulli_distribution distro(0.5);
+}  // namespace globalConfigs
 
-vector<vector<CircleShape>> getGridBySpacing(
-    int rows = 3,
-    int cols = 3,
-    float inBetweenSpacing = 30.0f,
-    float pointRadius = 10.0f,
-    float posX = 0.0,
-    float posY = 0.0) {
-  vector<vector<CircleShape>> gridPoints(rows, vector<CircleShape>(cols));
+class Grid {
+  typedef vector<CircleShape> V1D_CIRCLE_SHAPE;
+  typedef vector<V1D_CIRCLE_SHAPE> V2D_CIRCLE_SHAPE;
 
-  for (int r = 0; r < rows; ++r) {
-    for (int c = 0; c < cols; ++c) {
-      CircleShape point(pointRadius);
-      point.setFillColor(Color::White);
-      float xCoord = posX + (pointRadius + inBetweenSpacing) * c;
-      float yCoord = posY + (pointRadius + inBetweenSpacing) * r;
-      point.setPosition(xCoord, yCoord);
-      gridPoints[r][c] = point;
-    }
-  }
-  return gridPoints;
-}
-
-bool isOut(int rows, int cols, int r, int c) {
-  if (r >= 0 && r <= rows - 1 && c >= 0 && c <= cols - 1) return false;
-  return true;
-}
-
-int getNumNeighbours(vector<vector<bool>>& isAlive, int rows, int cols, int r, int c) {
+ private:
+  Grid() {}
+  V2D_CIRCLE_SHAPE gridPoints;
+  V2D_CIRCLE_SHAPE tempGridPoints;
   vector<vector<int>> delta = {
       {1, 0},
       {0, 1},
@@ -47,75 +27,43 @@ int getNumNeighbours(vector<vector<bool>>& isAlive, int rows, int cols, int r, i
       {0, -1},
       {1, -1},
       {-1, 1},
-      {-1, -1}};
-  int count = 0;
-  for (auto d : delta) {
-    int dr = r + d[0];
-    int dc = c + d[1];
-    if (!isOut(rows, cols, dr, dc) && isAlive[dr][dc]) {
-      count++;
-    }
-  }
-  return count;
-}
+      {-1, -1},
+  };
 
-void updateIsAlive(vector<vector<bool>>& isAlive) {
-  int rows = isAlive.size();
-  int cols = isAlive[0].size();
-  vector<vector<bool>> tempIsAlive(rows, vector<bool>(cols));
+  bool isOut(int r, int c);
+  int getAliveNbrs(int r, int c);
 
-  for (int r = 0; r <= rows - 1; ++r) {
-    for (int c = 0; c <= cols - 1; ++c) {
-      int nbrs = getNumNeighbours(isAlive, rows, cols, r, c);
-      if (isAlive[r][c]) {
-        if (nbrs < 2 || nbrs > 3)
-          tempIsAlive[r][c] = false;
-        else if (nbrs == 2 || nbrs == 3)
-          tempIsAlive[r][c] = true;
-      } else {
-        if (nbrs == 3) tempIsAlive[r][c] = true;
-      }
-    }
-  }
-  isAlive = tempIsAlive;
-}
+ public:
+  int rows;
+  int cols;
+  float circleRadius;
+  float inBetweenSpacing;
+  float posX = 0.0;
+  float posY = 0.0;
 
-void updateGrid(vector<vector<CircleShape>>& gridPoints, vector<vector<bool>>& isAlive) {
-  int rows = isAlive.size();
-  int cols = isAlive[0].size();
+  Grid(
+      int rows,
+      int cols,
+      float circleRadius,
+      float inBetweenSpacing,
+      bool (*randBoolGen)(),
+      float posX = 0.0,
+      float posY = 0.0);
+  void update();
+  void draw(RenderWindow& window);
+};
 
-  for (int r = 0; r <= rows - 1; ++r) {
-    for (int c = 0; c <= cols - 1; ++c) {
-      if (isAlive[r][c])
-        gridPoints[r][c].setFillColor(Color::White);
-      else
-        gridPoints[r][c].setFillColor(Color::Black);
-    }
-  }
+bool getRandBool() {
+  return globalConfigs::distro(globalConfigs::gen);
 }
 
 int main() {
   RenderWindow window(VideoMode(800, 600), "Grid of Points");
-  int rows = 75;
-  int cols = 125;
-  vector<vector<bool>> isAlive(rows, vector<bool>(cols));
-  vector<vector<CircleShape>> gridPoints = getGridBySpacing(rows, cols, 10, 2, 0, 0);
+  constexpr int ROWS = 80;
+  constexpr int COLS = 150;
+  Grid gridOfPoints(ROWS, COLS, 1, 5.0, getRandBool);
 
-  random_device randomDevice;
-  mt19937 gen(randomDevice());
-  bernoulli_distribution distro(0.5);
-
-  for (int r = 0; r <= rows - 1; ++r) {
-    for (int c = 0; c <= cols - 1; ++c) {
-      isAlive[r][c] = distro(gen);
-    }
-  }
-  // int r = 0;
-  // float r = 0;
-  // CircleShape c(r);
   while (window.isOpen()) {
-    // c.setRadius(r);
-    // r += 0.5;
     Event event;
     while (window.pollEvent(event)) {
       switch (event.type) {
@@ -124,6 +72,7 @@ int main() {
           break;
         }
         case Event::Resized: {
+          // window.clear();
           FloatRect view(0, 0, event.size.width, event.size.height);
           window.setView(View(view));
           break;
@@ -137,21 +86,85 @@ int main() {
     }
 
     window.clear();
-    drawGrid(gridPoints, window);
-    // cout << isAlive[0][0];
-    updateIsAlive(isAlive);
-    updateGrid(gridPoints, isAlive);
-    // sleep(seconds(1));
-
-    // window.draw(c);
-    // VertexArray line(Lines, 2);
-    // line[0].position = Vector2f(0, 90);
-    // line[0].color = Color::White;
-    // line[1].position = Vector2f(100, 90);
-    // line[1].color = Color::White;
-    // window.draw(line);
+    gridOfPoints.draw(window);
+    gridOfPoints.update();
     window.display();
   }
 
   return 0;
+}
+
+bool Grid::isOut(int r, int c) {
+  if (r <= 0 || r >= rows) {
+    return true;
+  }
+  if (c <= 0 || c >= cols) {
+    return true;
+  }
+  return false;
+}
+
+int Grid::getAliveNbrs(int r, int c) {
+  int count = 0;
+  for (auto d : delta) {
+    int dr = r + d[0];
+    int dc = c + d[1];
+    if (!isOut(dr, dc) && gridPoints[dr][dc].getFillColor() == Color::White) {
+      count++;
+    }
+  }
+  return count;
+}
+
+Grid::Grid(
+    int rows,
+    int cols,
+    float circleRadius,
+    float inBetweenSpacing,
+    bool (*randBoolGen)(),
+    float posX,
+    float posY) {
+  this->rows = rows;
+  this->cols = cols;
+  this->posX = posX;
+  this->posY = posY;
+  this->circleRadius = circleRadius;
+  this->inBetweenSpacing = inBetweenSpacing;
+
+  gridPoints = V2D_CIRCLE_SHAPE(rows, V1D_CIRCLE_SHAPE(cols));
+  for (int r = 0; r <= rows - 1; ++r) {
+    for (int c = 0; c <= cols - 1; ++c) {
+      CircleShape point(circleRadius);
+      if (randBoolGen())
+        point.setFillColor(Color::White);
+      else
+        point.setFillColor(Color::Black);
+      float xCoord = posX + (circleRadius + inBetweenSpacing) * c;
+      float yCoord = posY + (circleRadius + inBetweenSpacing) * r;
+      point.setPosition(xCoord, yCoord);
+      gridPoints[r][c] = point;
+    }
+  }
+  tempGridPoints = gridPoints;
+}
+
+void Grid::update() {
+  for (int r = 0; r <= rows - 1; ++r) {
+    for (int c = 0; c <= cols - 1; ++c) {
+      int nbrs = getAliveNbrs(r, c);
+      if (gridPoints[r][c].getFillColor() == Color::White) {
+        if (nbrs < 2 || nbrs > 3)
+          tempGridPoints[r][c].setFillColor(Color::Black);
+      } else {
+        if (nbrs == 3) tempGridPoints[r][c].setFillColor(Color::White);
+      }
+    }
+  }
+  gridPoints = tempGridPoints;
+}
+
+void Grid::draw(RenderWindow& window) {
+  for (const auto& pointRow : gridPoints)
+    for (const auto& point : pointRow)
+      window.draw(point);
 }
