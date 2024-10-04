@@ -58,9 +58,9 @@ bool getRandBool() {
 
 int main() {
   RenderWindow window(VideoMode(800, 600), "Grid of Points");
-  constexpr int ROWS = 150;
-  constexpr int COLS = 200;
-  Grid gridOfPoints(ROWS, COLS, 1, 1.5, getRandBool);
+  constexpr int ROWS = 175;
+  constexpr int COLS = 375;
+  Grid gridOfPoints(ROWS, COLS, 2, 3, getRandBool);
 
   while (window.isOpen()) {
     Event event;
