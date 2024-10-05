@@ -5,7 +5,7 @@
 using namespace std;
 using namespace sf;
 
-namespace globalConfigs {
+namespace globalConfigsForRandoms {
 random_device randomDevice;
 mt19937 gen(randomDevice());
 bernoulli_distribution distro(0.5);
@@ -53,7 +53,7 @@ class Grid {
 };
 
 bool getRandBool() {
-  return globalConfigs::distro(globalConfigs::gen);
+  return globalConfigsForRandoms::distro(globalConfigsForRandoms::gen);
 }
 
 int main() {
@@ -71,7 +71,6 @@ int main() {
           break;
         }
         case Event::Resized: {
-          // window.clear();
           FloatRect view(0, 0, event.size.width, event.size.height);
           window.setView(View(view));
           break;
