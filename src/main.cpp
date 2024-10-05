@@ -1,6 +1,11 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <random>
+#ifdef _WIN32
+#include <dwmapi.h>  // For DwmSetWindowAttribute
+#include <windows.h>
+#pragma comment(lib, "dwmapi.lib")  // Link dwmapi library
+#endif
 
 using namespace std;
 using namespace sf;
@@ -9,7 +14,7 @@ namespace globalConfigsForRandoms {
 random_device randomDevice;
 mt19937 gen(randomDevice());
 bernoulli_distribution distro(0.5);
-}  // namespace globalConfigs
+}  // namespace globalConfigsForRandoms
 
 class Grid {
   typedef vector<CircleShape> V1D_CIRCLE_SHAPE;
@@ -56,8 +61,32 @@ bool getRandBool() {
   return globalConfigsForRandoms::distro(globalConfigsForRandoms::gen);
 }
 
+void setTitleBarColor(sf::RenderWindow& window, COLORREF color) {
+#ifdef _WIN32
+  HWND hwnd = window.getSystemHandle(); 
+  const DWORD DWMWA_CAPTION_COLOR = 35; 
+  DwmSetWindowAttribute(hwnd, DWMWA_CAPTION_COLOR, &color, sizeof(color));
+#endif
+}
+
+void centerWindow(sf::RenderWindow& window) {
+    sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
+
+    sf::Vector2u windowSize = window.getSize();
+
+    int posX = (desktop.width - windowSize.x) / 2;
+    int posY = (desktop.height - windowSize.y) / 2;
+
+    window.setPosition(sf::Vector2i(posX, posY));
+}
+
 int main() {
-  RenderWindow window(VideoMode(800, 600), "Grid of Points");
+  VideoMode desktop = VideoMode::getDesktopMode();
+  RenderWindow window(VideoMode(desktop.width, desktop.height), "Grid of Points");
+  COLORREF customColor = RGB(0, 0, 0);
+  setTitleBarColor(window, customColor);
+  centerWindow(window);
+
   constexpr int ROWS = 175;
   constexpr int COLS = 375;
   Grid gridOfPoints(ROWS, COLS, 2, 3, getRandBool);
