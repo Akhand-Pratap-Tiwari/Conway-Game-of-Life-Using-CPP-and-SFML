@@ -87,9 +87,9 @@ int main() {
   setTitleBarColor(window, customColor);
   centerWindow(window);
 
-  constexpr int ROWS = 175;
-  constexpr int COLS = 375;
-  Grid gridOfPoints(ROWS, COLS, 2, 3, getRandBool);
+  constexpr int ROWS = 100;
+  constexpr int COLS = 100;
+  Grid gridOfPoints(ROWS, COLS, 3, 2, getRandBool);
 
   while (window.isOpen()) {
     Event event;
@@ -122,10 +122,10 @@ int main() {
 }
 
 bool Grid::isOut(int r, int c) {
-  if (r <= 0 || r >= rows) {
+  if (r < 0 || r >= rows) {
     return true;
   }
-  if (c <= 0 || c >= cols) {
+  if (c < 0 || c >= cols) {
     return true;
   }
   return false;
@@ -159,6 +159,8 @@ Grid::Grid(
   this->inBetweenSpacing = inBetweenSpacing;
 
   gridPoints = V2D_CIRCLE_SHAPE(rows, V1D_CIRCLE_SHAPE(cols));
+  float diameter = 2*circleRadius;
+
   for (int r = 0; r <= rows - 1; ++r) {
     for (int c = 0; c <= cols - 1; ++c) {
       CircleShape point(circleRadius);
@@ -166,8 +168,8 @@ Grid::Grid(
         point.setFillColor(Color::White);
       else
         point.setFillColor(Color::Black);
-      float xCoord = posX + (circleRadius + inBetweenSpacing) * c;
-      float yCoord = posY + (circleRadius + inBetweenSpacing) * r;
+      float xCoord = posX + (diameter + inBetweenSpacing) * c;
+      float yCoord = posY + (diameter + inBetweenSpacing) * r;
       point.setPosition(xCoord, yCoord);
       gridPoints[r][c] = point;
     }
