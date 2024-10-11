@@ -3,10 +3,9 @@
 #define GRID_HPP
 
 #include <SFML/Graphics.hpp>
-#include <vector>
 #include <random>
-// using namespace sf;
-// using namespace std;
+#include <vector>
+
 typedef std::vector<sf::CircleShape> V1D_CIRCLE_SHAPE;
 typedef std::vector<V1D_CIRCLE_SHAPE> V2D_CIRCLE_SHAPE;
 
@@ -28,14 +27,13 @@ class Grid {
 
  public:
   Grid(
-    int rows, 
-    int cols, 
-    float circleRadius, 
-    float inBetweenSpacing, 
-    bool (*randBoolGen)(), 
-    float posX = 0.0, 
-    float posY = 0.0
-    );
+      int rows,
+      int cols,
+      float circleRadius,
+      float inBetweenSpacing,
+      bool (*randBoolGen)(),
+      float posX = 0.0,
+      float posY = 0.0);
   void update();
   void draw(sf::RenderWindow& window);
 };

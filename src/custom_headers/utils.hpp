@@ -5,12 +5,10 @@
 #include <SFML/Graphics.hpp>
 
 #ifdef _WIN32
-#include <windows.h>
 #include <dwmapi.h>
+#include <windows.h>
 #pragma comment(lib, "dwmapi.lib")
 #endif
-
-using namespace sf;
 
 void setTitleBarColor(sf::RenderWindow& window, COLORREF color);
 void centerWindow(sf::RenderWindow& window);

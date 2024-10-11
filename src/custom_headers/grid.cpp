@@ -2,31 +2,28 @@
 #include "grid.hpp"
 
 int Grid::delta[8][2] = {
-  {1, 0}, 
-  {0, 1}, 
-  {1, 1}, 
-  {-1, 0}, 
-  {0, -1}, 
-  {1, -1}, 
-  {-1, 1}, 
-  {-1, -1}
-};
+    {1, 0},
+    {0, 1},
+    {1, 1},
+    {-1, 0},
+    {0, -1},
+    {1, -1},
+    {-1, 1},
+    {-1, -1}};
 
 Grid::Grid(
     int rows,
-    int cols, 
-    float circleRadius, 
-    float inBetweenSpacing, 
-    bool (*randBoolGen)(), 
-    float posX, 
-    float posY
-    ) : 
-    rows(rows), 
-    cols(cols), 
-    circleRadius(circleRadius), 
-    inBetweenSpacing(inBetweenSpacing), 
-    posX(posX), 
-    posY(posY) {
+    int cols,
+    float circleRadius,
+    float inBetweenSpacing,
+    bool (*randBoolGen)(),
+    float posX,
+    float posY) : rows(rows),
+                  cols(cols),
+                  circleRadius(circleRadius),
+                  inBetweenSpacing(inBetweenSpacing),
+                  posX(posX),
+                  posY(posY) {
   gridPoints = V2D_CIRCLE_SHAPE(rows, V1D_CIRCLE_SHAPE(cols));
   float diameter = 2 * circleRadius;
 
