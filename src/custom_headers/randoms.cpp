@@ -7,6 +7,6 @@ std::mt19937 gen(randomDevice());
 std::bernoulli_distribution distro(0.5);
 }  // namespace globalConfigsForRandoms
 
-bool getRandBool() {
+bool getRandBool50(int r, int c) {
   return globalConfigsForRandoms::distro(globalConfigsForRandoms::gen);
 }

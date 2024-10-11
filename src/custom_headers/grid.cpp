@@ -16,7 +16,7 @@ Grid::Grid(
     int cols,
     float circleRadius,
     float inBetweenSpacing,
-    bool (*randBoolGen)(),
+    bool (*randBoolGen)(int, int),
     float posX,
     float posY) : rows(rows),
                   cols(cols),
@@ -30,7 +30,7 @@ Grid::Grid(
   for (int r = 0; r <= rows - 1; ++r) {
     for (int c = 0; c <= cols - 1; ++c) {
       sf::CircleShape point(circleRadius);
-      point.setFillColor(randBoolGen() ? sf::Color::White : sf::Color::Black);
+      point.setFillColor(randBoolGen(r, c) ? sf::Color::White : sf::Color::Black);
       float xCoord = posX + (diameter + inBetweenSpacing) * c;
       float yCoord = posY + (diameter + inBetweenSpacing) * r;
       point.setPosition(xCoord, yCoord);

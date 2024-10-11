@@ -10,6 +10,6 @@ extern std::mt19937 gen;
 extern std::bernoulli_distribution distro;
 }  // namespace globalConfigsForRandoms
 
-bool getRandBool();
+bool getRandBool50(int, int);
 
 #endif  // RANDOMS_HPP

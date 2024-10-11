@@ -1,12 +1,24 @@
 #include <SFML/Graphics.hpp>
 // #include <iostream>
-
+/*
+  TODO: Add readme
+  Add init state from image
+  Add init state from mouse clicks
+*/
 #include "./custom_headers/grid.hpp"
 #include "./custom_headers/randoms.hpp"
 #include "./custom_headers/utils.hpp"
 
 using namespace std;
 using namespace sf;
+
+constexpr int ROWS = 160;
+constexpr int COLS = 315;
+
+bool getRandBoolCustom(int r, int c) {
+  return (r == c - COLS/4 || r == -c + COLS/2 + COLS/4);
+  // return r*r + c*c < 50;
+}
 
 int main() {
   VideoMode desktop = VideoMode::getDesktopMode();
@@ -17,7 +29,7 @@ int main() {
 
   constexpr int ROWS = 160;
   constexpr int COLS = 315;
-  Grid gridOfPoints(ROWS, COLS, 2, 2, getRandBool);
+  Grid gridOfPoints(ROWS, COLS, 2, 2, getRandBoolCustom);
 
   while (window.isOpen()) {
     Event event;

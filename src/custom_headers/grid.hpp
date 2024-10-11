@@ -31,7 +31,7 @@ class Grid {
       int cols,
       float circleRadius,
       float inBetweenSpacing,
-      bool (*randBoolGen)(),
+      bool (*randBoolGen)(int, int),
       float posX = 0.0,
       float posY = 0.0);
   void update();
