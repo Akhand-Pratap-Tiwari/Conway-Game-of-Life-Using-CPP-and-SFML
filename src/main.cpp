@@ -15,9 +15,9 @@ int main() {
   setTitleBarColor(window, customColor);
   centerWindow(window);
 
-  constexpr int ROWS = 120;
-  constexpr int COLS = 250;
-  Grid gridOfPoints(ROWS, COLS, 3, 2, getRandBool);
+  constexpr int ROWS = 160;
+  constexpr int COLS = 315;
+  Grid gridOfPoints(ROWS, COLS, 2, 2, getRandBool);
 
   while (window.isOpen()) {
     Event event;
