@@ -2,6 +2,7 @@ import argparse
 import subprocess
 import shutil
 import os
+import glob
 
 def run_command(command):
     causes = [
@@ -28,11 +29,22 @@ def run_command(command):
 
 
 def make_debug_build():
+    workspace_folder = os.getcwd()
+    src_folder = os.path.join(workspace_folder, "src")
+    custom_headers_folder = os.path.join(src_folder, "custom_headers")
+    
+    custom_header_cpp_file_paths = glob.glob(os.path.join(custom_headers_folder, "*.cpp"))
+    custom_header_cpp_file_paths_str = " ".join(custom_header_cpp_file_paths)
+    custom_header_cpp_file_paths_str = custom_header_cpp_file_paths_str.replace("\\", "/")
+
+    main_cpp_file_path = os.path.join(src_folder, "main.cpp")
+    main_cpp_file_path = main_cpp_file_path.replace("\\", "/")
+
     print("Making Debug Build...")
     command = [
         """cmd /c chcp 65001>nul""",
         """&& cd src """,
-        """&& cl.exe /Zi /EHsc /nologo /ID:/ProgramsAndApps/SFML-2.6.1/include E:\TEMP_TESTS\c++_sfml\src\main.cpp /link /MACHINE:X86 /LIBPATH:"D:/ProgramsAndApps/SFML-2.6.1/lib" sfml-system.lib sfml-window.lib sfml-graphics.lib sfml-network.lib sfml-audio.lib"""
+        f"""&& cl.exe /Zi /EHsc /nologo /ID:/ProgramsAndApps/SFML-2.6.1/include {main_cpp_file_path} {custom_header_cpp_file_paths_str} /link /MACHINE:X86 /LIBPATH:"D:/ProgramsAndApps/SFML-2.6.1/lib" sfml-system.lib sfml-window.lib sfml-graphics.lib sfml-network.lib sfml-audio.lib"""
     ]
     run_command(command)
 

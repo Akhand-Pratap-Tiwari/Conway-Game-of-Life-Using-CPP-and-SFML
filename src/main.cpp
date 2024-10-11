@@ -1,9 +1,9 @@
 #include <SFML/Graphics.hpp>
 // #include <iostream>
 
-#include "grid.hpp"
-#include "randoms.hpp"
-#include "utils.hpp"
+#include "./custom_headers/grid.hpp"
+#include "./custom_headers/randoms.hpp"
+#include "./custom_headers/utils.hpp"
 
 using namespace std;
 using namespace sf;
@@ -15,8 +15,8 @@ int main() {
   setTitleBarColor(window, customColor);
   centerWindow(window);
 
-  constexpr int ROWS = 100;
-  constexpr int COLS = 100;
+  constexpr int ROWS = 120;
+  constexpr int COLS = 250;
   Grid gridOfPoints(ROWS, COLS, 3, 2, getRandBool);
 
   while (window.isOpen()) {
