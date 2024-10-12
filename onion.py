@@ -121,14 +121,32 @@ def run_debug_program():
         make_debug_build()
     run_command(command)
 
+def pack_to_zip(folder_path, output_zip):
+    if not os.path.exists(folder_path):
+        print(f"The folder {folder_path} does not exist.")
+        return
+
+    shutil.make_archive(output_zip, 'zip', folder_path)
+    print(f"Folder '{folder_path}' has been compressed to '{output_zip}.zip'")
+
+def pack_release():
+    release_folder_path = os.path.join(os.getcwd(), 'release')  
+    output_zip = 'release_pack'
+    pack_to_zip(release_folder_path, output_zip)
+
+def pack_debug():
+    src_folder_path = os.path.join(os.getcwd(), 'src')  
+    output_zip = 'src_pack'
+    pack_to_zip(src_folder_path, output_zip)
+
 
 def main():
     parser = argparse.ArgumentParser(description="Build and Run Utility")
 
-    action_choices = ['make', 'run']
+    action_choices = ['make', 'run', 'pack']
     build_type_choices = ['debug', 'release']
     parser.add_argument("action", choices=action_choices,
-                        help="Action: 'make' or 'run'")
+                        help="Action: 'make', 'run' or 'pack'")
     parser.add_argument("build_type", choices=build_type_choices,
                         help="Build type: 'debug' or 'release'")
 
@@ -144,7 +162,11 @@ def main():
             run_debug_program()
         elif args.build_type == 'release':
             run_release_program()
-
+    elif args.action == 'pack':
+        if args.build_type == 'debug':
+            pack_debug()
+        elif args.build_type == 'release':
+            pack_release()
 
 if __name__ == "__main__":
     main()
