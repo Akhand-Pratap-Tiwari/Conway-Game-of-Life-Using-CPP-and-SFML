@@ -48,21 +48,15 @@ int main() {
   // centerWindow(window);
   HWND hwnd = window.getSystemHandle();
   ShowWindow(hwnd, SW_MAXIMIZE);
-  window.clear();
-  window.display();
-
-  const float WINDOW_WIDTH = window.getSize().x;
-  const float WINDOW_HEIGHT = window.getSize().y;
 
   constexpr float RADIUS = 1;
   constexpr float SPACING = 2;
 
-  float POSX = WINDOW_WIDTH / 2 - (COLS * (2 * RADIUS + SPACING) - SPACING) / 2;
-  float POSY = WINDOW_HEIGHT / 2 - (ROWS * (2 * RADIUS + SPACING) - SPACING) / 2;  //(ROWS/4)*5;
+  float POSX = window.getSize().x / 2 - (COLS * (2 * RADIUS + SPACING) - SPACING) / 2;
+  float POSY = window.getSize().y / 2 - (ROWS * (2 * RADIUS + SPACING) - SPACING) / 2;  //(ROWS/4)*5;
   Grid gridOfPoints(ROWS, COLS, RADIUS, SPACING, getRandBoolCustom, POSX, POSY);
   gridOfPoints.draw(window);
 
-  // window.display();
   while (window.isOpen()) {
     Event event;
     while (window.pollEvent(event)) {
@@ -87,7 +81,7 @@ int main() {
       }
     }
 
-    // gridOfPoints.update();
+    gridOfPoints.update();
     drawDebugLines(window);
     gridOfPoints.draw(window);
     window.display();

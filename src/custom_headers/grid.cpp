@@ -89,4 +89,13 @@ void Grid::reposition(float newPosX, float newPosY) {
     }
     posX = newPosX;
     posY = newPosY;
+    dx = newPosX - tempGridPoints[0][0].getPosition().x;
+    dy = newPosY - tempGridPoints[0][0].getPosition().y;
+    for(auto& tempPointRow : tempGridPoints) {
+        for(auto& tempPoint : tempPointRow) {
+            float px = tempPoint.getPosition().x;
+            float py = tempPoint.getPosition().y;
+            tempPoint.setPosition(px+dx, py+dy);
+        }
+    }
 }
