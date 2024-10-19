@@ -53,14 +53,12 @@ int main() {
 
   const float WINDOW_WIDTH = window.getSize().x;
   const float WINDOW_HEIGHT = window.getSize().y;
-  
+
   constexpr float RADIUS = 1;
   constexpr float SPACING = 2;
-  
-  const float POSX = WINDOW_WIDTH / 2 - 2 * COLS - 1;
-  const float POSY = WINDOW_HEIGHT / 2 - 2 * ROWS - 1;
 
-  
+  float POSX = WINDOW_WIDTH / 2 - (COLS * (2 * RADIUS + SPACING) - SPACING) / 2;
+  float POSY = WINDOW_HEIGHT / 2 - (ROWS * (2 * RADIUS + SPACING) - SPACING) / 2;  //(ROWS/4)*5;
   Grid gridOfPoints(ROWS, COLS, RADIUS, SPACING, getRandBoolCustom, POSX, POSY);
   gridOfPoints.draw(window);
 
@@ -76,6 +74,9 @@ int main() {
         case Event::Resized: {
           FloatRect view(0, 0, event.size.width, event.size.height);
           window.setView(View(view));
+          POSX = window.getSize().x / 2 - (COLS * (2 * RADIUS + SPACING) - SPACING) / 2;
+          POSY = window.getSize().y / 2 - (ROWS * (2 * RADIUS + SPACING) - SPACING) / 2;
+          gridOfPoints.reposition(POSX, POSY);
           break;
         }
         case Event::KeyPressed: {

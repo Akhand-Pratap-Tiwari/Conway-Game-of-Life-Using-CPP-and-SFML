@@ -76,3 +76,17 @@ void Grid::draw(sf::RenderWindow& window) {
     for (const auto& point : pointRow)
       window.draw(point);
 }
+
+void Grid::reposition(float newPosX, float newPosY) {
+    float dx = newPosX - posX;
+    float dy = newPosY - posY;
+    for(auto& pointRow : gridPoints) {
+        for(auto& point : pointRow) {
+            float px = point.getPosition().x;
+            float py = point.getPosition().y;
+            point.setPosition(px+dx, py+dy);
+        }
+    }
+    posX = newPosX;
+    posY = newPosY;
+}
