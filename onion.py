@@ -4,35 +4,34 @@ import shutil
 import os
 import glob
 
+workspace_folder = os.getcwd()
+src_folder = os.path.join(workspace_folder, 'src')
+release_folder = os.path.join(workspace_folder, 'release')
+custom_headers_folder = os.path.join(src_folder, "custom_headers")
+
 def run_command(command):
     causes = [
-        "Maybe a memory runtime error in C++.",
-        "Maybe a null pointer error in C++.", 
-        "Maybe a stack overflow error in C++.",
-        "Maybe the sfml dlls required for the program to run are missing. They should be in the same folder as main.exe.",
-        "Maybe enough memory is not available for the program to run.",
-        "Maybe include file or some other path related error."
+        "Memory runtime error in C++.",
+        "Null pointer error in C++.", 
+        "Stack overflow error in C++.",
+        "The required sfml dlls are missing. They should be in the same folder as main.exe.",
+        "Not enough memory available for the program to run.",
+        "Include file or some other path related error."
     ]
-    # result = None
     try:
         result = subprocess.run(command, capture_output=True, text=True, check=True, shell=True)
-        # raise result
-        # print(result.stdout)
+        print(' '.join(command), "executed with code", result.returncode)
+        print(result.stdout)
     except subprocess.CalledProcessError as e:
         if(e != None): print(f"Error Happened: {e}")
         if(e.stdout != None and e.stdout != ""): print(f"Output: {e.stdout}")
         if(e.stderr != None and e.stderr != ""): print(f"Error: {e.stderr}")
-        # print(result.stderr)
-        print(f"Something went wrong here is what might be the causes:")
+        print(f"Something went wrong, probable causes:")
         for cause in causes:
             print("\t"+cause)
 
 
-def make_debug_build():
-    workspace_folder = os.getcwd()
-    src_folder = os.path.join(workspace_folder, "src")
-    custom_headers_folder = os.path.join(src_folder, "custom_headers")
-    
+def make_debug_build():   
     custom_header_cpp_file_paths = glob.glob(os.path.join(custom_headers_folder, "*.cpp"))
     custom_header_cpp_file_paths_str = " ".join(custom_header_cpp_file_paths)
     custom_header_cpp_file_paths_str = custom_header_cpp_file_paths_str.replace("\\", "/")
@@ -66,8 +65,6 @@ def check_then_build_src_exe(src_exe_path, exe_filename):
 
 def make_release_build():
     print("Making Release Build...")
-    src_folder = os.path.join(os.getcwd(), 'src')
-    release_folder = os.path.join(os.getcwd(), 'release')
     exe_filename = "main.exe"
     src_exe_path = os.path.join(src_folder, exe_filename)
     release_exe_path = os.path.join(release_folder, exe_filename)
@@ -96,7 +93,6 @@ def make_release_build():
 
 def run_release_program():
     print("Running Release Build Program...")
-    release_folder = os.path.join(os.getcwd(), 'release')
     exe_filename = "main.exe"
     release_exe_path = os.path.join(release_folder, exe_filename)
     command = [
@@ -110,7 +106,6 @@ def run_release_program():
 
 def run_debug_program():
     print("Running Debug Build Program...")
-    src_folder = os.path.join(os.getcwd(), 'src')
     exe_filename = "main.exe"
     src_exe_path = os.path.join(src_folder, exe_filename)
     command = [
@@ -130,14 +125,12 @@ def pack_to_zip(folder_path, output_zip):
     print(f"Folder '{folder_path}' has been compressed to '{output_zip}.zip'")
 
 def pack_release():
-    release_folder_path = os.path.join(os.getcwd(), 'release')  
     output_zip = 'release_pack'
-    pack_to_zip(release_folder_path, output_zip)
+    pack_to_zip(release_folder, output_zip)
 
 def pack_debug():
-    src_folder_path = os.path.join(os.getcwd(), 'src')  
     output_zip = 'src_pack'
-    pack_to_zip(src_folder_path, output_zip)
+    pack_to_zip(src_folder, output_zip)
 
 
 def main():

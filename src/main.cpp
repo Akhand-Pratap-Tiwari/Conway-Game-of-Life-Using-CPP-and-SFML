@@ -15,8 +15,8 @@
 using namespace std;
 using namespace sf;
 
-constexpr int ROWS = 200;
-constexpr int COLS = 200;
+constexpr int ROWS = 245;
+constexpr int COLS = 245;
 
 bool getRandBoolCustom(int r, int c) {
   return (r == c || r + c == COLS - 1);
@@ -43,7 +43,7 @@ void drawDebugLines(RenderWindow& window) {
 int main() {
   VideoMode desktop = VideoMode::getDesktopMode();
   RenderWindow window(desktop, "Conway's Game of Life");
-  COLORREF customColor = RGB(0, 0, 0);
+  COLORREF customColor = RGB(40, 40, 43);
   setTitleBarColor(window, customColor);
   // centerWindow(window);
   HWND hwnd = window.getSystemHandle();
@@ -82,7 +82,7 @@ int main() {
     }
 
     gridOfPoints.update();
-    drawDebugLines(window);
+    // drawDebugLines(window);
     gridOfPoints.draw(window);
     window.display();
     window.clear();
