@@ -4,10 +4,15 @@ import shutil
 import os
 import glob
 
+output_exe_name = "main.exe"
 workspace_folder = os.getcwd()
-src_folder = os.path.join(workspace_folder, 'src')
-release_folder = os.path.join(workspace_folder, 'release')
+release_folder = os.path.join(workspace_folder, "release")
+src_folder = os.path.join(workspace_folder, "src")
 custom_headers_folder = os.path.join(src_folder, "custom_headers")
+exec_folder = os.path.join(src_folder, "exec")
+obj_folder = os.path.join(src_folder, "obj")
+main_cpp_file_path = os.path.join(src_folder, "main.cpp")
+custom_header_cpp_file_paths = glob.glob(os.path.join(custom_headers_folder, "*.cpp"))
 
 def run_command(command):
     causes = [
@@ -31,28 +36,28 @@ def run_command(command):
             print("\t"+cause)
 
 
-def make_debug_build():   
-    custom_header_cpp_file_paths = glob.glob(os.path.join(custom_headers_folder, "*.cpp"))
+def make_debug_build():
     custom_header_cpp_file_paths_str = " ".join(custom_header_cpp_file_paths)
     custom_header_cpp_file_paths_str = custom_header_cpp_file_paths_str.replace("\\", "/")
-
-    main_cpp_file_path = os.path.join(src_folder, "main.cpp")
-    main_cpp_file_path = main_cpp_file_path.replace("\\", "/")
+ 
+    main_cpp_file_path_formatted = main_cpp_file_path.replace("\\", "/")
+    obj_folder_formatted = obj_folder.replace("\\", "/") + '/'
+    exec_folder_formatted = exec_folder.replace("\\", "/") + '/'
 
     print("Making Debug Build...")
     command = [
         """cmd /c chcp 65001>nul""",
         """&& cd src """,
-        f"""&& cl.exe /Zi /EHsc /nologo /ID:/ProgramsAndApps/SFML-2.6.1/include {main_cpp_file_path} {custom_header_cpp_file_paths_str} /link /MACHINE:X86 /LIBPATH:"D:/ProgramsAndApps/SFML-2.6.1/lib" sfml-system.lib sfml-window.lib sfml-graphics.lib sfml-network.lib sfml-audio.lib"""
-    ]
+        f"""&& cl.exe /Zi /EHsc /nologo /ID:/ProgramsAndApps/SFML-2.6.1/include /Fo{obj_folder_formatted} {main_cpp_file_path_formatted} {custom_header_cpp_file_paths_str} /Fe{exec_folder_formatted} /Fd{exec_folder_formatted} /link /MACHINE:X86 /LIBPATH:"D:/ProgramsAndApps/SFML-2.6.1/lib" sfml-system.lib sfml-window.lib sfml-graphics.lib sfml-network.lib sfml-audio.lib"""
+        ]
     run_command(command)
 
-def copy_file(src_exe_path, release_exe_path, exe_filename):
+def copy_file(src_path, release_path, filename):
     try:
-        shutil.copy(src_exe_path, release_exe_path)
-        print(f"Copied {exe_filename} to the release folder.")
+        shutil.copy(src_path, release_path)
+        print(f"Copied {filename} to the release folder.")
     except FileNotFoundError as e:
-        print(f"Error copying {exe_filename}: {e}")
+        print(f"Error copying {filename}: {e}")
     except Exception as e:
         print(f"Unexpected error: {e}")
 
@@ -65,20 +70,19 @@ def check_then_build_src_exe(src_exe_path, exe_filename):
 
 def make_release_build():
     print("Making Release Build...")
-    exe_filename = "main.exe"
-    src_exe_path = os.path.join(src_folder, exe_filename)
-    release_exe_path = os.path.join(release_folder, exe_filename)
+    src_exe_path = os.path.join(exec_folder, output_exe_name)
+    release_exe_path = os.path.join(release_folder, output_exe_name)
 
     if os.path.isfile(release_exe_path):
         isOverwrite = ""
         while(isOverwrite != "y" and isOverwrite != "n"):
-            print(f"{exe_filename} already exists in release folder. Overwrite? (Y/N): ", end="")
+            print(f"{output_exe_name} already exists in release folder. Overwrite? (Y/N): ", end="")
             isOverwrite = input()
             isOverwrite.lower()
             if(isOverwrite == "y"):
-                check_then_build_src_exe(src_exe_path, exe_filename)
+                check_then_build_src_exe(src_exe_path, output_exe_name)
                 print("Overwriting...")
-                copy_file(src_exe_path, release_exe_path, exe_filename)
+                copy_file(src_exe_path, release_exe_path, output_exe_name)
                 break
             elif(isOverwrite == "n"):
                 print("Exiting...")
@@ -86,10 +90,10 @@ def make_release_build():
             else:
                 print("Invalid Option.")
     else:
-        print(f"{exe_filename} does not exist in release folder, checking src...")
-        check_then_build_src_exe(src_exe_path, exe_filename)
+        print(f"{output_exe_name} does not exist in release folder, checking src...")
+        check_then_build_src_exe(src_exe_path, output_exe_name)
         print("Copying...")
-        copy_file(src_exe_path, release_exe_path, exe_filename)
+        copy_file(src_exe_path, release_exe_path, output_exe_name)
 
 def run_release_program():
     print("Running Release Build Program...")
@@ -107,9 +111,9 @@ def run_release_program():
 def run_debug_program():
     print("Running Debug Build Program...")
     exe_filename = "main.exe"
-    src_exe_path = os.path.join(src_folder, exe_filename)
+    src_exe_path = os.path.join(exec_folder, exe_filename)
     command = [
-        "cmd /c chcp 65001>nul && cd src && main.exe"
+        f"cmd /c chcp 65001>nul && {src_exe_path}"
     ]
     if not os.path.isfile(src_exe_path):
         print("Debug build not found. Building new debug...")
