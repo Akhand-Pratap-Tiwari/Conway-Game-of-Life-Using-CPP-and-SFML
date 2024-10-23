@@ -5,13 +5,20 @@ import os
 import glob
 
 output_exe_name = "main.exe"
+
 workspace_folder = os.getcwd()
+
 release_folder = os.path.join(workspace_folder, "release")
 src_folder = os.path.join(workspace_folder, "src")
-custom_headers_folder = os.path.join(src_folder, "custom_headers")
+
+release_exe_path = os.path.join(release_folder, output_exe_name)
+
 exec_folder = os.path.join(src_folder, "exec")
+custom_headers_folder = os.path.join(src_folder, "custom_headers")
 obj_folder = os.path.join(src_folder, "obj")
 main_cpp_file_path = os.path.join(src_folder, "main.cpp")
+
+src_exe_path = os.path.join(exec_folder, output_exe_name)
 custom_header_cpp_file_paths = glob.glob(os.path.join(custom_headers_folder, "*.cpp"))
 
 def run_command(command):
@@ -35,11 +42,9 @@ def run_command(command):
         for cause in causes:
             print("\t"+cause)
 
-
 def make_debug_build():
     custom_header_cpp_file_paths_str = " ".join(custom_header_cpp_file_paths)
-    custom_header_cpp_file_paths_str = custom_header_cpp_file_paths_str.replace("\\", "/")
- 
+    custom_header_cpp_file_paths_str_formatted = custom_header_cpp_file_paths_str.replace("\\", "/")
     main_cpp_file_path_formatted = main_cpp_file_path.replace("\\", "/")
     obj_folder_formatted = obj_folder.replace("\\", "/") + '/'
     exec_folder_formatted = exec_folder.replace("\\", "/") + '/'
@@ -48,14 +53,14 @@ def make_debug_build():
     command = [
         """cmd /c chcp 65001>nul""",
         """&& cd src """,
-        f"""&& cl.exe /Zi /EHsc /nologo /ID:/ProgramsAndApps/SFML-2.6.1/include /Fo{obj_folder_formatted} {main_cpp_file_path_formatted} {custom_header_cpp_file_paths_str} /Fe{exec_folder_formatted} /Fd{exec_folder_formatted} /link /MACHINE:X86 /LIBPATH:"D:/ProgramsAndApps/SFML-2.6.1/lib" sfml-system.lib sfml-window.lib sfml-graphics.lib sfml-network.lib sfml-audio.lib"""
+        f"""&& cl.exe /Zi /EHsc /nologo /ID:/ProgramsAndApps/SFML-2.6.1/include /Fo{obj_folder_formatted} {main_cpp_file_path_formatted} {custom_header_cpp_file_paths_str_formatted} /Fe{exec_folder_formatted} /Fd{exec_folder_formatted} /link /MACHINE:X86 /LIBPATH:"D:/ProgramsAndApps/SFML-2.6.1/lib" sfml-system.lib sfml-window.lib sfml-graphics.lib sfml-network.lib sfml-audio.lib"""
         ]
     run_command(command)
 
 def copy_file(src_path, release_path, filename):
     try:
         shutil.copy(src_path, release_path)
-        print(f"Copied {filename} to the release folder.")
+        print(f"Copied {filename} to the {release_path}")
     except FileNotFoundError as e:
         print(f"Error copying {filename}: {e}")
     except Exception as e:
@@ -70,8 +75,6 @@ def check_then_build_src_exe(src_exe_path, exe_filename):
 
 def make_release_build():
     print("Making Release Build...")
-    src_exe_path = os.path.join(exec_folder, output_exe_name)
-    release_exe_path = os.path.join(release_folder, output_exe_name)
 
     if os.path.isfile(release_exe_path):
         isOverwrite = ""
@@ -97,21 +100,18 @@ def make_release_build():
 
 def run_release_program():
     print("Running Release Build Program...")
-    exe_filename = "main.exe"
-    release_exe_path = os.path.join(release_folder, exe_filename)
+    release_exe_path = os.path.join(release_folder, output_exe_name)
     command = [
-        "cmd /c chcp 65001>nul && cd release && main.exe"
+        f"cmd /c chcp 65001>nul && {release_exe_path}"
     ]
     if not os.path.isfile(release_exe_path):
         print("Release build not found. Building new release...")
         make_release_build()
     run_command(command)
 
-
 def run_debug_program():
     print("Running Debug Build Program...")
-    exe_filename = "main.exe"
-    src_exe_path = os.path.join(exec_folder, exe_filename)
+    src_exe_path = os.path.join(exec_folder, output_exe_name)
     command = [
         f"cmd /c chcp 65001>nul && {src_exe_path}"
     ]
