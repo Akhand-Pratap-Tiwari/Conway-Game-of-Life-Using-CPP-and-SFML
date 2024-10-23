@@ -66,12 +66,12 @@ def copy_file(src_path, release_path, filename):
     except Exception as e:
         print(f"Unexpected error: {e}")
 
-def check_then_build_src_exe(src_exe_path, exe_filename):
+def check_then_build_src_exe():
     if not os.path.isfile(src_exe_path):
-        print(f"{exe_filename} does not exist in src folder, running build...")
+        print(f"{output_exe_name} does not exist in src folder, running build...")
         make_debug_build()
     else:
-        print(f"Latest {exe_filename} found in src folder")
+        print(f"Latest {output_exe_name} found in src folder")
 
 def make_release_build():
     print("Making Release Build...")
@@ -83,7 +83,7 @@ def make_release_build():
             isOverwrite = input()
             isOverwrite.lower()
             if(isOverwrite == "y"):
-                check_then_build_src_exe(src_exe_path, output_exe_name)
+                check_then_build_src_exe()
                 print("Overwriting...")
                 copy_file(src_exe_path, release_exe_path, output_exe_name)
                 break
@@ -94,7 +94,7 @@ def make_release_build():
                 print("Invalid Option.")
     else:
         print(f"{output_exe_name} does not exist in release folder, checking src...")
-        check_then_build_src_exe(src_exe_path, output_exe_name)
+        check_then_build_src_exe()
         print("Copying...")
         copy_file(src_exe_path, release_exe_path, output_exe_name)
 
