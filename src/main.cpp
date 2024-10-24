@@ -1,26 +1,30 @@
+#include <windows.h>
+
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
-// #include <iostream>
-/*
-  TODO: Add readme
-  Add init state from image
-  Add init state from mouse clicks
-*/
-#include <windows.h>
 #pragma comment(lib, "user32.lib")
 #include "./custom_headers/grid.hpp"
 #include "./custom_headers/randoms.hpp"
 #include "./custom_headers/utils.hpp"
+// #include <iostream>
 
 using namespace std;
 using namespace sf;
 
-constexpr int ROWS = 245;
-constexpr int COLS = 245;
+/*
+  TODO:
+  Add readme
+  Add init state from image
+  Add init state from mouse clicks
+  Add comments in cpp as well as onion
+*/
+constexpr int ROWS = 160;
+constexpr int COLS = 160;
 
 bool getRandBoolCustom(int r, int c) {
-  return (r == c || r + c == COLS - 1);
-  // return r*r + c*c < 50;
+  // return getRandBool50();
+  // return (r == c || r + c == COLS - 1);
+  return r * r + c * c < 50;
 }
 
 void drawDebugLines(RenderWindow& window) {
@@ -49,7 +53,7 @@ int main() {
   HWND hwnd = window.getSystemHandle();
   ShowWindow(hwnd, SW_MAXIMIZE);
 
-  constexpr float RADIUS = 1;
+  constexpr float RADIUS = 2;
   constexpr float SPACING = 2;
 
   float POSX = window.getSize().x / 2 - (COLS * (2 * RADIUS + SPACING) - SPACING) / 2;
