@@ -1,6 +1,10 @@
 ## About the project
 This project displays Conway's game of life using C++ and SFML.
 
+![Screenshot 2024-10-24 193052](https://github.com/user-attachments/assets/3e803b63-6ef2-468a-a93b-f462491c3982)
+
+![Screenshot 2024-10-24 193106](https://github.com/user-attachments/assets/b883e1e7-edf6-4740-bee0-7ace2fa3841e)
+
 ## Directory and Files:
 - `.vscode` contains my vs code configuration. You might want to use your own.
 - `release` contains all the dlls and main.exe required to run the program on a windows machine.
