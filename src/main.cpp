@@ -18,13 +18,13 @@ using namespace sf;
   Add init state from mouse clicks
   Add comments in cpp as well as onion
 */
-constexpr int ROWS = 160;
-constexpr int COLS = 160;
+constexpr int ROWS = 175;
+constexpr int COLS = 175;
 
 bool getRandBoolCustom(int r, int c) {
   // return getRandBool50();
-  // return (r == c || r + c == COLS - 1);
-  return r * r + c * c < 50;
+  return (r == c || r + c == COLS - 1);
+//   return r * r + c * c < 50;
 }
 
 void drawDebugLines(RenderWindow& window) {
